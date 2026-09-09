@@ -1,0 +1,9 @@
+{
+  "name": "sentinelforge-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Demo application for the SentinelForge secure developer platform",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
