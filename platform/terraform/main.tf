@@ -110,7 +110,13 @@ resource "aws_instance" "platform" {
   key_name                    = aws_key_pair.platform.key_name
   associate_public_ip_address = true
 
-    user_data = file("${path.module}/../scripts/install-k3s.sh")
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address
+    ]
+  }
+
+  user_data = file("${path.module}/../scripts/install-k3s.sh")
 
   root_block_device {
     volume_size = 20

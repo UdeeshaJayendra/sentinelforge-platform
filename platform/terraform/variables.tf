@@ -19,7 +19,7 @@ variable "vpc_cidr" {
 variable "instance_type" {
   description = "EC2 instance type for the SentinelForge platform node"
   type        = string
-  default     = "t3.micro"
+  default     = "t3.small"
 }
 
 variable "allowed_ssh_cidr" {
