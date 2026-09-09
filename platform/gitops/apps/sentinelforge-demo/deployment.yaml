@@ -7,6 +7,8 @@ metadata:
     app: sentinelforge-demo
 spec:
   replicas: 2
+  progressDeadlineSeconds: 60
+  progressDeadlineAbort: true
 
   strategy:
     canary:
