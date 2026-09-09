@@ -30,6 +30,14 @@ spec:
           image: 216453078762.dkr.ecr.ap-south-1.amazonaws.com/sentinelforge-demo:4fc0034eccf2fd076a48bbe756ce10c45426d3af
           ports:
             - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 2
           resources:
             requests:
               cpu: 10m
