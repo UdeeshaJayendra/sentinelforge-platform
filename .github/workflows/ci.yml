@@ -1,0 +1,30 @@
+name: SentinelForge CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate Kubernetes Manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Validate GitOps manifests
+        run: |
+          kubectl kustomize platform/gitops/apps/sentinelforge-demo > /tmp/rendered.yaml
+          test -s /tmp/rendered.yaml
+
+      - name: Show rendered manifests
+        run: |
+          cat /tmp/rendered.yaml
