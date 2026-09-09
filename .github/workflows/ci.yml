@@ -79,3 +79,13 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           severity: CRITICAL,HIGH
+
+      - name: Tag image for Amazon ECR
+        run: |
+          docker tag sentinelforge-demo:${{ github.sha }} \
+            ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
+
+      - name: Push image to Amazon ECR
+        run: |
+          docker push \
+            ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
