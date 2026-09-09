@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentinelforge-demo
+  namespace: default
+  labels:
+    app: sentinelforge-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentinelforge-demo
+  template:
+    metadata:
+      labels:
+        app: sentinelforge-demo
+    spec:
+      containers:
+        - name: app
+          image: traefik/whoami:v1.10
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentinelforge-demo
+spec:
+  selector:
+    app: sentinelforge-demo
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
