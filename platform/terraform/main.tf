@@ -170,10 +170,10 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     }
 
     condition {
-      test     = "StringLike"
+      test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:UdeeshaJayendra/sentinelforge-platform:*"
+        "repo:UdeeshaJayendra@216197859/sentinelforge-platform@1362264207"
       ]
     }
   }
