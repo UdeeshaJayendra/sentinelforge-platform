@@ -46,6 +46,7 @@ jobs:
 
   container-security:
     name: Build and Scan Container
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     permissions:
