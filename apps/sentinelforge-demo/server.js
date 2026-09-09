@@ -10,7 +10,8 @@ const server = http.createServer((req, res) => {
   res.end(
     JSON.stringify({
       service: "sentinelforge-demo",
-      status: "healthy"
+      status: "healthy",
+      version: "v2-canary"
     })
   );
 });
