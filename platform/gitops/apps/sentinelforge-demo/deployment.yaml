@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: sentinelforge-demo
   namespace: default
@@ -7,9 +7,18 @@ metadata:
     app: sentinelforge-demo
 spec:
   replicas: 2
+
+  strategy:
+    canary:
+      steps:
+        - setWeight: 50
+        - pause:
+            duration: 30s
+
   selector:
     matchLabels:
       app: sentinelforge-demo
+
   template:
     metadata:
       labels:
@@ -27,6 +36,7 @@ spec:
             limits:
               cpu: 100m
               memory: 32Mi
+
 ---
 apiVersion: v1
 kind: Service
