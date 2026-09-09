@@ -130,3 +130,109 @@ resource "aws_instance" "platform" {
     Role    = "platform-node"
   }
 }
+
+resource "aws_ecr_repository" "demo" {
+  name                 = "${var.project_name}-demo"
+  image_tag_mutability = "IMMUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  encryption_configuration {
+    encryption_type = "AES256"
+  }
+
+  tags = {
+    Name    = "${var.project_name}-demo"
+    Project = "SentinelForge"
+  }
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "github_actions_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type = "Federated"
+      identifiers = [
+        aws_iam_openid_connect_provider.github.arn
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        "repo:UdeeshaJayendra/sentinelforge-platform:*"
+      ]
+    }
+  }
+}
+resource "aws_iam_openid_connect_provider" "github" {
+  url = "https://token.actions.githubusercontent.com"
+
+  client_id_list = [
+    "sts.amazonaws.com"
+  ]
+
+  tags = {
+    Name    = "${var.project_name}-github-oidc"
+    Project = "SentinelForge"
+  }
+}
+
+resource "aws_iam_role" "github_actions" {
+  name = "${var.project_name}-github-actions"
+
+  assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
+
+  tags = {
+    Name    = "${var.project_name}-github-actions"
+    Project = "SentinelForge"
+  }
+}
+
+data "aws_iam_policy_document" "github_actions_ecr" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ecr:GetAuthorizationToken"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:CompleteLayerUpload",
+      "ecr:InitiateLayerUpload",
+      "ecr:PutImage",
+      "ecr:UploadLayerPart"
+    ]
+
+    resources = [
+      aws_ecr_repository.demo.arn
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "github_actions_ecr" {
+  name = "${var.project_name}-github-actions-ecr"
+  role = aws_iam_role.github_actions.id
+
+  policy = data.aws_iam_policy_document.github_actions_ecr.json
+}

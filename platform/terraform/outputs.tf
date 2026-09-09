@@ -32,3 +32,12 @@ output "platform_security_group_id" {
   description = "SentinelForge platform security group ID"
   value       = aws_security_group.platform.id
 }
+output "demo_ecr_repository_url" {
+  description = "ECR repository URL for the SentinelForge demo application"
+  value       = aws_ecr_repository.demo.repository_url
+}
+
+output "github_actions_role_arn" {
+  description = "IAM role assumed by GitHub Actions through OIDC"
+  value       = aws_iam_role.github_actions.arn
+}
