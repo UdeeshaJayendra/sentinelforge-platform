@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
@@ -89,3 +89,18 @@ jobs:
         run: |
           docker push \
             ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
+
+      - name: Update GitOps image
+        run: |
+          sed -i "s|image: .*|image: ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}|" \
+          platform/gitops/apps/sentinelforge-demo/deployment.yaml
+
+      - name: Commit GitOps update
+        run: |
+           git config user.name "github-actions[bot]"
+           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+           git add platform/gitops/apps/sentinelforge-demo/deployment.yaml
+
+           git commit -m "ci: update demo image to ${{ github.sha }}" || exit 0
+           git push
