@@ -25,6 +25,42 @@ jobs:
           kubectl kustomize platform/gitops/apps/sentinelforge-demo > /tmp/rendered.yaml
           test -s /tmp/rendered.yaml
 
+      - name: Enforce Kubernetes security policy
+        run: |
+          echo "Checking Kubernetes security policy..."
+
+          if ! grep -q "readinessProbe:" /tmp/rendered.yaml; then
+            echo "FAILED: readinessProbe is required"
+            exit 1
+          fi
+
+          if ! grep -q "requests:" /tmp/rendered.yaml; then
+            echo "FAILED: resource requests are required"
+            exit 1
+          fi
+
+          if ! grep -q "limits:" /tmp/rendered.yaml; then
+            echo "FAILED: resource limits are required"
+            exit 1
+          fi
+
+          if grep -q "privileged: true" /tmp/rendered.yaml; then
+            echo "FAILED: privileged containers are not allowed"
+            exit 1
+          fi
+
+          if ! grep -q "kind: NetworkPolicy" /tmp/rendered.yaml; then
+            echo "FAILED: NetworkPolicy is required"
+            exit 1
+          fi
+
+          echo "Kubernetes security policy PASSED"
+          echo "- readinessProbe: OK"
+          echo "- resource requests: OK"
+          echo "- resource limits: OK"
+          echo "- privileged container: NOT enabled"
+          echo "- NetworkPolicy: OK"
+
       - name: Show rendered manifests
         run: |
           cat /tmp/rendered.yaml
@@ -98,10 +134,10 @@ jobs:
 
       - name: Commit GitOps update
         run: |
-           git config user.name "github-actions[bot]"
-           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-           git add platform/gitops/apps/sentinelforge-demo/deployment.yaml
+          git add platform/gitops/apps/sentinelforge-demo/deployment.yaml
 
-           git commit -m "ci: update demo image to ${{ github.sha }}" || exit 0
-           git push
+          git commit -m "ci: update demo image to ${{ github.sha }}" || exit 0
+          git push
