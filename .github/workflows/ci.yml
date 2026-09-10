@@ -134,6 +134,7 @@ jobs:
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3
+
       - name: Tag image for Amazon ECR
         run: |
           docker tag sentinelforge-demo:${{ github.sha }} \
@@ -142,6 +143,13 @@ jobs:
       - name: Push image to Amazon ECR
         run: |
           docker push \
+            ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
+
+      - name: Sign container image
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign --yes \
             ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
 
       - name: Update GitOps image
