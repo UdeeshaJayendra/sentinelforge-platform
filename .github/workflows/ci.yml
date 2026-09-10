@@ -156,9 +156,24 @@ jobs:
         env:
           COSIGN_EXPERIMENTAL: "1"
         run: |
-          cosign sign --yes \
-            ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
-      - name: Verify container image signature
+          DIGEST=$(aws ecr describe-images \
+            --repository-name sentinelforge-demo \
+            --image-ids imageTag=${{ github.sha }} \
+            --region ap-south-1 \
+            --query 'imageDetails[0].imageDigest' \
+            --output text)
+
+          SIGNATURE_TAG="sha256-${DIGEST#sha256:}.sig"
+
+          if aws ecr describe-images \
+            --repository-name sentinelforge-demo \
+            --image-ids imageTag="$SIGNATURE_TAG" \
+            --region ap-south-1 > /dev/null 2>&1; then
+            echo "Cosign signature already exists. Skipping signing."
+          else
+            cosign sign --yes \
+              "${{ vars.ECR_REPOSITORY_URI }}@${DIGEST}"
+          fi
         env:
           COSIGN_EXPERIMENTAL: "1"
         run: |
