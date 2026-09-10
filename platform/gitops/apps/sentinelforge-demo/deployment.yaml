@@ -5,6 +5,7 @@ metadata:
   namespace: default
   labels:
     app: sentinelforge-demo
+
 spec:
   replicas: 2
   progressDeadlineSeconds: 60
@@ -24,12 +25,17 @@ spec:
     metadata:
       labels:
         app: sentinelforge-demo
+      annotations:
+        sentinelforge.dev/network-policy: "enabled"
+
     spec:
       containers:
         - name: app
-          image: 216453078762.dkr.ecr.ap-south-1.amazonaws.com/sentinelforge-demo:2ecfbc9e47f62903582c3365766e79db15236037
+          image: 216453078762.dkr.ecr.ap-south-1.amazonaws.com/sentinelforge-demo:eb4e6796c06de47a8a1feac5204e06f342eddf7a
+
           ports:
             - containerPort: 8080
+
           readinessProbe:
             httpGet:
               path: /
@@ -38,6 +44,7 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 2
             failureThreshold: 2
+
           resources:
             requests:
               cpu: 10m
@@ -51,10 +58,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: sentinelforge-demo
+  namespace: default
+
 spec:
   selector:
     app: sentinelforge-demo
+
   ports:
     - port: 80
       targetPort: 8080
+
   type: ClusterIP
