@@ -142,8 +142,15 @@ jobs:
 
       - name: Push image to Amazon ECR
         run: |
-          docker push \
-            ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
+          if aws ecr describe-images \
+            --repository-name sentinelforge-demo \
+            --image-ids imageTag=${{ github.sha }} \
+            --region ap-south-1 > /dev/null 2>&1; then
+            echo "Image tag already exists in ECR. Skipping push."
+          else
+            docker push \
+              ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
+          fi
 
       - name: Sign container image
         env:
