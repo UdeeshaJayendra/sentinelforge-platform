@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: 216453078762.dkr.ecr.ap-south-1.amazonaws.com/sentinelforge-demo:ed2ebb8ca044eadb8154b70e2f538fb221b4001c
+          image: 216453078762.dkr.ecr.ap-south-1.amazonaws.com/sentinelforge-demo:7e93e64959d4612473509f2976ab53dbfaa7ebaa
 
           ports:
             - containerPort: 8080
