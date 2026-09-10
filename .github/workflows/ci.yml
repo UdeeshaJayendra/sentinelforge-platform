@@ -132,6 +132,8 @@ jobs:
           path: sbom-${{ github.sha }}.json
           retention-days: 7
 
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
       - name: Tag image for Amazon ECR
         run: |
           docker tag sentinelforge-demo:${{ github.sha }} \
