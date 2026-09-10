@@ -105,16 +105,6 @@ The main objectives of SentinelForge are to demonstrate:
 
 SentinelForge uses a lightweight AWS architecture consisting primarily of a single EC2 platform node running k3s.
 
-## Kubernetes Control-Plane Node
-
-The Kubernetes control-plane node was successfully deployed on AWS.
-
-### Screenshot 01 — Kubernetes Control-Plane Node
-
-![Kubernetes control-plane node](docs/screenshots/01-kubernetes-control-plane-node.png)
-
-**Evidence:** AWS EC2 platform node successfully deployed.
-
 ---
 
 ## k3s System Pods
