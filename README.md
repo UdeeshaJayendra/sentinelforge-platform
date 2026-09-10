@@ -35,47 +35,7 @@ The platform is intentionally designed to run on a **small AWS environment**, us
 # 2. Architecture
 
 The SentinelForge delivery flow is:
-
-```text
-Developer
-    │
-    ▼
-GitHub Repository
-    │
-    ▼
-GitHub Actions
-    │
-    ├── Kubernetes Validation
-    ├── Gitleaks
-    ├── Trivy
-    ├── SBOM Generation
-    ├── Cosign Signing
-    └── Cosign Verification
-    │
-    ▼
-Amazon ECR
-    │
-    ▼
-Argo CD
-    │
-    ▼
-k3s / Kubernetes
-    │
-    ├── NetworkPolicy
-    ├── Readiness Probe
-    ├── Resource Requests/Limits
-    │
-    └── Argo Rollouts
-            │
-            ├── Canary
-            ├── Pause
-            ├── Promotion
-            └── Automatic Abort
-                    │
-                    ▼
-              Stable Application
-```
-
+<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/ce50dce0-883d-45e6-a52b-101ed8a5c341" />
 ---
 
 # 3. Project Objectives
