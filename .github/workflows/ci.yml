@@ -117,6 +117,21 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL,HIGH
 
+      - name: Generate container SBOM
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: sentinelforge-demo:${{ github.sha }}
+          format: cyclonedx
+          output: sbom-${{ github.sha }}.json
+          scanners: vuln,secret,misconfig
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentinelforge-demo-sbom-${{ github.sha }}
+          path: sbom-${{ github.sha }}.json
+          retention-days: 7
+
       - name: Tag image for Amazon ECR
         run: |
           docker tag sentinelforge-demo:${{ github.sha }} \
