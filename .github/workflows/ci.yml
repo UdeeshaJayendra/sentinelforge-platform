@@ -158,6 +158,21 @@ jobs:
         run: |
           cosign sign --yes \
             ${{ vars.ECR_REPOSITORY_URI }}:${{ github.sha }}
+      - name: Verify container image signature
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          DIGEST=$(aws ecr describe-images \
+            --repository-name sentinelforge-demo \
+            --image-ids imageTag=${{ github.sha }} \
+            --region ap-south-1 \
+            --query 'imageDetails[0].imageDigest' \
+            --output text)
+
+          cosign verify \
+            --certificate-identity-regexp "https://github.com/UdeeshaJayendra/sentinelforge-platform/.github/workflows/.*" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "${{ vars.ECR_REPOSITORY_URI }}@${DIGEST}"
 
       - name: Update GitOps image
         run: |
