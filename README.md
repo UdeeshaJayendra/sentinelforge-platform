@@ -548,40 +548,9 @@ The workflow contains three major jobs:
 
 # Project Outcome
 
-SentinelForge demonstrates a complete secure delivery platform:
+SentinelForge complete workflow
 
-```text
-Source Code
-     ↓
-CI Validation
-     ↓
-Secret Scanning
-     ↓
-Container Build
-     ↓
-Vulnerability Scanning
-     ↓
-SBOM
-     ↓
-Image Signing
-     ↓
-Image Verification
-     ↓
-Amazon ECR
-     ↓
-GitOps
-     ↓
-Kubernetes
-     ↓
-Canary Deployment
-     ↓
-Health Verification
-     ↓
-Automatic Abort / Promotion
-     ↓
-Stable Application
-```
-
+<img width="3036" height="6060" alt="7" src="https://github.com/user-attachments/assets/5a919f44-9725-40bc-9ed2-5518631ed40f" />
 ---
 
 # 29. Author
